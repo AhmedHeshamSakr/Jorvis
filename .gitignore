@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .claude/settings.local.json
+
+# Internal planning docs (kept locally, not published)
+PLAN.md
