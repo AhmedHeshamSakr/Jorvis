@@ -7,7 +7,7 @@ The rule: every entry below must answer two questions —
 1. **What changed?** (one line)
 2. **What's the migration?** (code snippet or "none — additive only")
 
-If a release has no entry here, it had no storage-shape changes. UI/feature/styling changes are out of scope; check the GitHub Releases page for those.
+If a release has no entry here, it had no storage-shape changes. UI/feature/styling changes are out of scope — see [CHANGELOG.md](CHANGELOG.md) for those.
 
 ---
 

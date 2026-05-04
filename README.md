@@ -55,6 +55,11 @@ Three IndexedDB tables: `projects`, `items`, `inboxEntries`. See [`src/db/schema
 
 The Settings → Data section exports/imports a versioned JSON dump so you can back up, sync between devices, or migrate browsers.
 
+## Changelog
+
+User-facing changes per release: [CHANGELOG.md](CHANGELOG.md).
+Storage-shape migrations and developer upgrade notes: [MIGRATION_NOTES.md](MIGRATION_NOTES.md).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
