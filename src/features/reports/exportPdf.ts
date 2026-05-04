@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+import DOMPurify, { type Config } from 'dompurify';
 
 const PRINT_CSS = `
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #23262e; max-width: 720px; margin: 32px auto; padding: 0 16px; line-height: 1.5; }
@@ -13,46 +13,68 @@ const PRINT_CSS = `
   @media print { body { margin: 0; max-width: none; } }
 `;
 
+const SANITIZE_CONFIG: Config = {
+  USE_PROFILES: { html: true },
+  ALLOWED_URI_REGEXP: /^(?:https?|mailto|tel|#|\/)/i,
+  FORBID_TAGS: ['style', 'iframe', 'object', 'embed', 'form', 'script'],
+  FORBID_ATTR: ['style', 'srcset', 'onerror', 'onload'],
+};
+
 export function exportPdf(title: string, markdown: string): void {
   const rawHtml = marked.parse(markdown, { async: false }) as string;
-  const safeHtml = DOMPurify.sanitize(rawHtml, { USE_PROFILES: { html: true } });
+  const safeHtml = DOMPurify.sanitize(rawHtml, SANITIZE_CONFIG) as unknown as string;
 
-  const win = window.open('', '_blank', 'noopener,noreferrer');
-  if (!win) {
-    alert('Popup blocked. Please allow popups for this site to export PDF.');
+  const iframe = document.createElement('iframe');
+  iframe.setAttribute('aria-hidden', 'true');
+  iframe.style.position = 'fixed';
+  iframe.style.right = '0';
+  iframe.style.bottom = '0';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  iframe.style.opacity = '0';
+  document.body.appendChild(iframe);
+
+  const idoc = iframe.contentDocument;
+  const iwin = iframe.contentWindow;
+  if (!idoc || !iwin) {
+    iframe.remove();
+    alert('Could not initialize print frame.');
     return;
   }
 
-  const doc = win.document;
-  doc.title = title;
+  while (idoc.documentElement.firstChild) {
+    idoc.documentElement.removeChild(idoc.documentElement.firstChild);
+  }
+  const head = idoc.createElement('head');
+  const body = idoc.createElement('body');
+  idoc.documentElement.appendChild(head);
+  idoc.documentElement.appendChild(body);
 
-  const head = doc.head ?? doc.documentElement.appendChild(doc.createElement('head'));
-  const body = doc.body ?? doc.documentElement.appendChild(doc.createElement('body'));
-
-  while (head.firstChild) head.removeChild(head.firstChild);
-  while (body.firstChild) body.removeChild(body.firstChild);
-
-  const titleEl = doc.createElement('title');
+  const titleEl = idoc.createElement('title');
   titleEl.textContent = title;
   head.appendChild(titleEl);
 
-  const styleEl = doc.createElement('style');
+  const styleEl = idoc.createElement('style');
   styleEl.textContent = PRINT_CSS;
   head.appendChild(styleEl);
 
   const parsed = new DOMParser().parseFromString(safeHtml, 'text/html');
-  const container = doc.createElement('article');
+  const container = idoc.createElement('article');
   for (const node of Array.from(parsed.body.childNodes)) {
-    container.appendChild(doc.adoptNode(node));
+    container.appendChild(idoc.adoptNode(node));
   }
   body.appendChild(container);
 
-  setTimeout(() => {
-    try {
-      win.focus();
-      win.print();
-    } catch {
-      /* user closed window */
-    }
-  }, 100);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      try {
+        iwin.focus();
+        iwin.print();
+      } catch {
+        /* print dialog dismissed */
+      }
+      setTimeout(() => iframe.remove(), 1000);
+    });
+  });
 }

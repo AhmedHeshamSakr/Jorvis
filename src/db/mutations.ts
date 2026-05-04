@@ -2,6 +2,7 @@ import { db, type ProjectTemplate, type Project } from './schema';
 import type { Item, InboxEntry, Stage } from './schema';
 import { getTemplateStages } from '../lib/templates';
 import { newId } from '../lib/ids';
+import { assertHexColor } from './validate';
 
 export async function createProject(name: string, template: ProjectTemplate): Promise<string> {
   const id = newId();
@@ -122,6 +123,7 @@ export async function deleteItem(id: string): Promise<void> {
 }
 
 export async function addStage(projectId: string, name: string, color: string): Promise<void> {
+  assertHexColor(color);
   await db.transaction('rw', db.projects, async () => {
     const p = await db.projects.get(projectId);
     if (!p) return;
@@ -140,6 +142,7 @@ export async function renameStage(projectId: string, stageId: string, name: stri
 }
 
 export async function recolorStage(projectId: string, stageId: string, color: string): Promise<void> {
+  assertHexColor(color);
   await db.transaction('rw', db.projects, async () => {
     const p = await db.projects.get(projectId);
     if (!p) return;

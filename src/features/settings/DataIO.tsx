@@ -1,13 +1,8 @@
 import { useRef, useState } from 'react';
-import { db, type Project, type Item, type InboxEntry } from '../../db/schema';
+import { db } from '../../db/schema';
+import { isValidDump, type Dump } from '../../db/validate';
 
-type Dump = {
-  version: 1;
-  exportedAt: number;
-  projects: Project[];
-  items: Item[];
-  inboxEntries: InboxEntry[];
-};
+const MAX_IMPORT_BYTES = 50_000_000;
 
 export function DataIO() {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -37,10 +32,17 @@ export function DataIO() {
     if (!file) return;
     e.target.value = '';
     try {
+      if (file.size > MAX_IMPORT_BYTES) {
+        throw new Error(`File too large (${Math.round(file.size / 1_000_000)} MB, max 50 MB)`);
+      }
       const text = await file.text();
-      const dump = JSON.parse(text) as Dump;
-      if (dump.version !== 1) throw new Error(`Unsupported version ${dump.version}`);
+      const parsed: unknown = JSON.parse(text);
+      if (!isValidDump(parsed)) {
+        throw new Error('File is not a valid TPM backup (schema mismatch)');
+      }
+      const dump: Dump = parsed;
       if (!confirm(`Import ${dump.projects.length} projects, ${dump.items.length} items, ${dump.inboxEntries.length} inbox entries? This will REPLACE all current data.`)) return;
+      if (!confirm('This action cannot be undone. Export a backup of the current data first if you might need it. Continue?')) return;
       await db.transaction('rw', db.projects, db.items, db.inboxEntries, async () => {
         await db.projects.clear();
         await db.items.clear();

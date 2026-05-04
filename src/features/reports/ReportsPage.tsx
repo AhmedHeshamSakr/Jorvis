@@ -104,6 +104,7 @@ export default function ReportsPage() {
         </div>
       ) : (
         <article className="glass p-8 prose prose-sm max-w-none dark:prose-invert">
+          {/* react-markdown is safe-by-default — do NOT add rehype-raw, it would enable inline HTML rendering. */}
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
         </article>
       )}
