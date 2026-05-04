@@ -1,12 +1,15 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { readFileSync } from 'node:fs';
+
+const { version } = JSON.parse(readFileSync('./package.json', 'utf8')) as { version: string };
 
 const plugins = [
   react(),
   // vite-plugin-pwa@1.x types target vite 5–7; we run on vite 8 (works at runtime)
   VitePWA({
-    registerType: 'autoUpdate',
+    registerType: 'prompt',
     includeAssets: [
       'favicon.svg',
       'icon.svg',
@@ -41,6 +44,9 @@ const plugins = [
 
 export default defineConfig({
   plugins,
+  define: {
+    __APP_VERSION__: JSON.stringify(version),
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/setupTests.ts'],

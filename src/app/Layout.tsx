@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { ThemeProvider } from './ThemeProvider';
+import { UpdateToast } from './UpdateToast';
 import { ItemDrawer } from '../features/items/ItemDrawer';
 
 export function Layout() {
@@ -12,6 +13,7 @@ export function Layout() {
           <Outlet />
         </main>
         <ItemDrawer />
+        <UpdateToast />
       </div>
     </ThemeProvider>
   );
