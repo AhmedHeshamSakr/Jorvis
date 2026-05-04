@@ -25,6 +25,7 @@ For storage-shape migrations and the developer-side upgrade path, see [MIGRATION
 - Package metadata (`author`, `homepage`, `repository`, `bugs`) added to `package.json`.
 - Removed the internal `PLAN.md` from version control (kept locally).
 - Generalized purpose statement in `SPEC.md` for public release.
+- **Changelog-lint workflow** (`.github/workflows/changelog.yml`) — fails PRs to `main` that don't add a bullet under `## [Unreleased]`. Auto-skips docs/config-only PRs; bypassable with the `skip-changelog` label.
 
 ## [0.1.1] — 2026-05-04
 

@@ -1,0 +1,53 @@
+name: Changelog
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-changelog') }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify CHANGELOG.md was updated
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+
+          NON_DOC_CHANGES=$(printf '%s\n' "$CHANGED_FILES" | \
+            grep -vE '(^|/)(.*\.(md|MD|txt))$|^LICENSE$|^\.gitignore$|^\.github/.*$' || true)
+
+          if [ -z "$NON_DOC_CHANGES" ]; then
+            echo "::notice::Docs/config-only PR — skipping CHANGELOG check."
+            exit 0
+          fi
+
+          if ! printf '%s\n' "$CHANGED_FILES" | grep -qx 'CHANGELOG.md'; then
+            echo "::error file=CHANGELOG.md::CHANGELOG.md was not updated. Add a bullet under '## [Unreleased]' describing your change, or apply the 'skip-changelog' label."
+            exit 1
+          fi
+
+          ADDED=$(git diff "$BASE_SHA" "$HEAD_SHA" -- CHANGELOG.md | awk '
+            /^\+\+\+/ || /^---/ { next }
+            /^@@/                                  { in_unrel = 0; next }
+            /^[ +-]## \[Unreleased\]/              { in_unrel = 1; next }
+            /^[ +-]## \[[^U]/                      { in_unrel = 0; next }
+            in_unrel && /^\+[[:space:]]*[-*][[:space:]]/ { n++ }
+            END { print n+0 }
+          ')
+
+          if [ "$ADDED" -eq 0 ]; then
+            echo "::error file=CHANGELOG.md::CHANGELOG.md was modified, but no new bullet was added under '## [Unreleased]'. Add one (under Added / Changed / Fixed / Security / Removed / Internal), or apply the 'skip-changelog' label."
+            exit 1
+          fi
+
+          echo "OK: $ADDED bullet(s) added under [Unreleased]."
