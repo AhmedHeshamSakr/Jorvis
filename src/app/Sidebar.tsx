@@ -27,10 +27,10 @@ export function Sidebar() {
       style={{ borderColor: 'var(--border)' }}
     >
       <div className="px-2 mb-4">
-        <div className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-          The Project
+        <div className="text-base font-semibold tracking-tight">Jorvis</div>
+        <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+          local-first
         </div>
-        <div className="text-base font-semibold tracking-tight">Maneger</div>
       </div>
       {navItems.map((n) => (
         <NavLink

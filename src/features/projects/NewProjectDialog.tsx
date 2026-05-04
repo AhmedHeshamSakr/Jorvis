@@ -36,7 +36,7 @@ export function NewProjectDialog({ onClose }: { onClose: () => void }) {
           autoFocus
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Mosque Command Center"
+          placeholder="e.g. Q4 launch"
           className="w-full rounded-md px-3 py-2 mb-4 bg-transparent border outline-none"
           style={{ borderColor: 'var(--border)' }}
         />

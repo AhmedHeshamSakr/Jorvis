@@ -9,9 +9,9 @@ const plugins = [
     registerType: 'autoUpdate',
     includeAssets: ['favicon.svg', 'icon.svg', 'icon-mask.svg'],
     manifest: {
-      name: 'The Project Maneger',
-      short_name: 'TPM',
-      description: 'Personal project tracker — visualize stages, items, and stakeholders.',
+      name: 'Jorvis',
+      short_name: 'Jorvis',
+      description: 'Jorvis — local-first project tracker. Jarvis, but you do the thinking.',
       theme_color: '#0e1014',
       background_color: '#0e1014',
       display: 'standalone',

@@ -1,7 +1,9 @@
 {
-  "name": "the-project-maneger",
+  "name": "jorvis",
+  "description": "Jorvis — local-first project tracker. Jarvis, but you do the thinking.",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.1",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
