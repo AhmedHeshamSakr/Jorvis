@@ -6,7 +6,7 @@
 
 ## 1. Purpose
 
-A personal, single-user PWA for tracking projects across the AWQAF program (26+ projects, 5 workstreams), Arabic ASR work, Flutter apps, and side projects.
+A personal, single-user PWA for tracking projects across multiple programs and workstreams, side projects, and side experiments.
 
 The tool must be **simple, practical, and visually beautiful**. The user explicitly does not want AI features, integrations, or complex workflows. They want to add a project, see it in a beautiful organized layout, drop content under stages, and at the end of the week generate a status report for leadership.
 

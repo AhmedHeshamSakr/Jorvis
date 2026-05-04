@@ -4,6 +4,15 @@
   "private": true,
   "version": "0.1.1",
   "license": "MIT",
+  "author": "Ahmed Hesham (AhmedHeshamSakr)",
+  "homepage": "https://github.com/AhmedHeshamSakr/Jorvis#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AhmedHeshamSakr/Jorvis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AhmedHeshamSakr/Jorvis/issues"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
