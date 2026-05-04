@@ -10,7 +10,7 @@ Because most project trackers either send your data to a server you didn't ask a
 
 ## Try it
 
-Live demo: _coming soon_
+Live demo: **https://jorvis.netlify.app**
 
 Or run locally:
 
@@ -47,7 +47,7 @@ React 19 · Vite 8 · TypeScript (strict) · Tailwind 3 · Dexie (IndexedDB) · 
 
 The app is single-user and local-first. There is no server, no auth, no API. Your data never leaves your device. Strangers visiting the same URL load the same JS bundle but see only their own (empty) IndexedDB; same-origin policy keeps installs isolated.
 
-For details on the threat model and the v0.1.1 hardening pass (CSP, sanitized PDF export, validated JSON import, hex-color guard against CSS injection), see commit `4acdf1f`.
+For details on the threat model and the v0.1.1 hardening pass (CSP, sanitized PDF export, validated JSON import, hex-color guard against CSS injection), see the [v0.1.1 release](https://github.com/AhmedHeshamSakr/Jorvis/releases/tag/v0.1.1).
 
 ## Data shape
 
